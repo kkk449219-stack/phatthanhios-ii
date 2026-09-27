@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP SYSTEM PANEL - GAME ASSIST</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: radial-gradient(circle at 50% 50%, #11111d 0%, #05050a 60%, #000 100%);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Các vòng tròn trang trí bay nền */
+.circle {
+    position: fixed;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
+    animation: float 8s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.c1 { width: 220px; height: 220px; left: 5%; top: 10%; }
+.c2 { width: 300px; height: 300px; right: -60px; top: 15%; animation-delay: 1.5s; }
+.c3 { width: 160px; height: 160px; left: 15%; bottom: -40px; animation-delay: 3s; }
+.c4 { width: 250px; height: 250px; right: 10%; bottom: -80px; animation-delay: 4.5s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(30px, -40px) rotate(180deg); }
+}
+
+.container {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 25px 15px;
+}
+
+/* MÀN HÌNH KHÓA NHẬP KEY */
+.key-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9999;
+    background: rgba(5, 5, 10, 0.95);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.key-card {
+    width: min(380px, 90vw);
+    padding: 35px 25px;
+    background: rgba(15, 15, 25, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+}
+
+.key-input {
+    width: 100%;
+    height: 50px;
+    background: #090910;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 0 15px;
+    color: #00ffd5;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 2px;
+    outline: none;
+    margin: 20px 0 10px 0;
+    transition: 0.3s;
+}
+
+.key-input:focus {
+    border-color: #00ffd5;
+    box-shadow: 0 0 15px rgba(0, 255, 213, 0.3);
+}
+
+.key-submit-btn {
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(45deg, #00f0ff, #00ff87);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 900;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.key-submit-btn:active { transform: scale(0.97); }
+
+.key-error {
+    color: #ff3366;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    min-height: 18px;
+}
+
+/* Bảng Điều Khiển Glassmorphism */
+.panel {
+    width: min(440px, 94vw);
+    padding: 35px 24px;
+    text-align: center;
+    border-radius: 28px;
+    background: rgba(15, 15, 25, 0.8);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    background: linear-gradient(45deg, #ff007f, #00f0ff, #00ff87);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.sub {
+    color: #8a8a9e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+/* Viền Cầu Vồng 7 Màu */
+.rainbow-box {
+    position: relative;
+    border-radius: 16px;
+    padding: 2px;
+    background: linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bfd, #7a00ff, #ff00c8, #ff0000);
+    background-size: 400% 400%;
+    animation: rainbowAnimation 5s linear infinite;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+}
+
+@keyframes rainbowAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.rainbow-btn {
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 14px;
+    background: #0d0d14;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    transition: all 0.2s ease;
+}
+
+.rainbow-btn:hover { background: #151522; }
+.rainbow-btn:active { transform: scale(0.97); }
+
+.featureGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.statusBadge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #888;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: 0.3s;
+}
+
+/* Trạng thái BẬT (ON) */
+.active-rainbow {
+    animation: rainbowAnimation 2s linear infinite !important;
+    box-shadow: 0 0 20px rgba(0, 255, 213, 0.4) !important;
+}
+
+.active-rainbow .rainbow-btn {
+    background: rgba(0, 255, 213, 0.12) !important;
+    color: #00ffd5 !important;
+}
+
+.active-rainbow .statusBadge {
+    background: #00ffd5 !important;
+    color: #000 !important;
+    font-weight: 900;
+    box-shadow: 0 0 10px #00ffd5;
+}
+
+/* KHU VỰC NHẬP TỆP DƯỚI CÙNG */
+.file-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.file-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 14px;
+    background: #181828;
+    border: 1px dashed #00f0ff;
+    border-radius: 12px;
+    color: #00f0ff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.file-btn:hover { background: rgba(0, 240, 255, 0.1); }
+
+.file-info {
+    margin-top: 12px;
+    background: rgba(0,0,0,0.4);
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+/* NÚT PHATTHANHIOS */
+.phatthanhios-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: linear-gradient(45deg, #ff007f, #7a00ff);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+    transition: 0.3s;
+}
+
+.phatthanhios-btn:active { transform: scale(0.97); }
+
+/* NÚT KÝ IPA TRỰC TUYẾN */
+.ipa-sign-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: linear-gradient(45deg, #00f0ff, #00ff87);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 255, 213, 0.3);
+    transition: 0.3s;
+}
+
+.ipa-sign-btn:active { transform: scale(0.97); }
+
+/* TÂM ẢO TRUNG TÂM MÀN HÌNH */
+.custom-crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    z-index: 99999;
+    pointer-events: none;
+    display: none;
+}
+
+/* KHU VỰC HIỂN THỊ WEB DÙNG CHUNG (TÍCH HỢP TRONG TRANG) */
+.web-container {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9998;
+    background: #05050a;
+    display: flex;
+    flex-direction: column;
+}
+
+.web-header {
+    height: 50px;
+    background: #10101a;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.back-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.web-frame {
+    width: 100%;
+    height: calc(100% - 50px);
+    border: none;
+}
+
+/* Pop-up Overlay & Bảng Code Terminal */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modalBox {
+    background: #10101a;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 24px 20px;
+    border-radius: 22px;
+    width: min(380px, 92vw);
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+.codeBox {
+    background: #050508;
+    border: 1px solid rgba(0, 255, 213, 0.2);
+    border-radius: 10px;
+    padding: 12px;
+    height: 110px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    color: #00ff87;
+    text-align: left;
+    overflow-y: auto;
+    margin: 12px 0;
+    line-height: 1.4;
+}
+
+.progressContainer {
+    width: 100%;
+    height: 10px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progressBar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff007f, #00f0ff, #00ff87);
+    transition: width 0.1s linear;
+}
+
+.modalBtns {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modalBtn {
+    flex: 1;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btnYes { background: linear-gradient(45deg, #00ff87, #00f0ff); color: #000; }
+.btnNo { background: #222230; color: #fff; }
+
+.hidden { display: none !important; }
+
+.footer {
+    margin-top: 25px;
+    color: #555566;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.logout-link {
+    color: #ff007f;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 11px;
+    margin-top: 8px;
+    display: inline-block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- THẺ PHÁT NHẠC NỀN -->
+<audio id="bgMusic" loop preload="auto">
+    <source src="nhac.mp3" type="audio/mpeg">
+</audio>
+
+<!-- MÀN HÌNH KHÓA NHẬP KEY -->
+<div id="keyScreen" class="key-screen">
+    <div class="key-card">
+        <div class="logo" style="font-size:22px;">KÍCH HOẠT HỆ THỐNG</div>
+        <div style="font-size:12px; color:#aaa; margin-top:5px;">Vui lòng nhập KEY bản quyền để tiếp tục</div>
+        
+        <input type="text" id="keyInput" class="key-input" placeholder="NHẬP KEY VÀO ĐÂY..." autocomplete="off">
+        <button class="key-submit-btn" onclick="btnAction(); checkKey();">XÁC NHẬN KEY</button>
+        
+        <div id="keyError" class="key-error"></div>
+    </div>
+</div>
+
+<!-- TÂM NGẮM SVG GIỮA MÀN HÌNH -->
+<div id="crosshair" class="custom-crosshair">
+    <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="7" fill="#00FFD5" />
+        <path d="M 32 50 A 18 18 0 0 1 50 32" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 68 50 A 18 18 0 0 1 50 68" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 32 A 18 18 0 0 1 68 50" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 50 68 A 18 18 0 0 1 32 50" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="38" stroke="#00FFD5" stroke-width="4" opacity="0.8"/>
+        <line x1="50" y1="2" x2="50" y2="22" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <line x1="50" y1="78" x2="50" y2="98" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <line x1="2" y1="50" x2="22" y2="50" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+        <line x1="78" y1="50" x2="98" y2="50" stroke="#00FFD5" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+</div>
+
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+<div class="circle c3"></div>
+<div class="circle c4"></div>
+
+<div class="container">
+    <!-- GIAO DIỆN CHÍNH (MAIN PANEL) -->
+    <div id="mainPanel" class="panel">
+        <div class="logo">VIP SYSTEM</div>
+        <div class="sub">BẢNG ĐIỀU KHIỂN TÍNH NĂNG</div>
+
+        <div class="featureGrid">
+            <!-- Aimlook -->
+            <div id="aimlookBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('AIMLOOK', 'aimlook');">
+                    <span>AIMLOOK</span>
+                    <span id="aimlookStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Aimbot -->
+            <div id="aimbotBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('AIMBOT', 'aimbot');">
+                    <span>AIMBOT</span>
+                    <span id="aimbotStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Nhẹ Tâm -->
+            <div id="nheTamBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('NHẸ TÂM', 'nheTam');">
+                    <span>NHẸ TÂM</span>
+                    <span id="nheTamStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Fix Lố Đầu -->
+            <div id="fixLoBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('FIX LỐ ĐẦU', 'fixLo');">
+                    <span>FIX LỐ ĐẦU</span>
+                    <span id="fixLoStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Tâm Ảo -->
+            <div id="tamAoBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('TÂM ẢO', 'tamAo');">
+                    <span>TÂM ẢO</span>
+                    <span id="tamAoStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Aimbooy -->
+            <div id="aimbooyBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('AIMBOOY', 'aimbooy');">
+                    <span>AIMBOOY</span>
+                    <span id="aimbooyStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+
+            <!-- Aimneck -->
+            <div id="aimneckBox" class="rainbow-box">
+                <button class="rainbow-btn" onclick="btnAction(); triggerVipProcess('AIMNECK', 'aimneck');">
+                    <span>AIMNECK</span>
+                    <span id="aimneckStatus" class="statusBadge">OFF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- KHU VỰC NHẬP TỆP DƯỚI CÙNG -->
+        <div class="file-section">
+            <label class="file-btn" for="fileInput">📁 CHỌN TỆP CẤU HÌNH (.ZIP / .DAT)</label>
+            <input type="file" id="fileInput" class="hidden" onchange="handleFileSelect(event)">
+
+            <div id="fileDisplayArea" class="file-info hidden">
+                <div id="fileNameText" style="color:#00ffd5; font-weight:bold; margin-bottom:8px;"></div>
+                <div id="fileStatusText" style="font-size:12px; color:#aaa;"></div>
+                <button id="applyFileBtn" class="modalBtn btnYes hidden" style="width:100%; margin-top:10px;" onclick="btnAction(); openGameSelectModal();">ÁP DỤNG</button>
+            </div>
+
+            <!-- NÚT PHATTHANHIOS -->
+            <button class="phatthanhios-btn" onclick="btnAction(); openPhatthanhiosWeb();">🌐 PHATTHANHIOS</button>
+
+            <!-- NÚT KÝ IPA TRỰC TUYẾN -->
+            <button class="ipa-sign-btn" onclick="btnAction(); openIpaSigningWeb();">✍️ KÝ IPA TRỰC TUYẾN</button>
+        </div>
+
+        <div class="footer">
+            VIP SYSTEM • ALL RIGHTS RESERVED <br>
+            <span class="logout-link" onclick="logoutKey()">[ Đăng xuất Key ]</span>
+        </div>
+    </div>
+</div>
+
+<!-- KHU VỰC HIỂN THỊ WEB TRỰC TIẾP TRÊN TRANG -->
+<div id="webContainer" class="web-container hidden">
+    <div class="web-header">
+        <button class="back-btn" onclick="btnAction(); closeEmbeddedWeb();">⬅ QUAY LẠI</button>
+        <span id="webTitle" style="margin-left:15px; font-weight:bold; font-size:13px; color:#00ffd5;">TRANG WEB</span>
+    </div>
+    <iframe id="webIframe" class="web-frame" src=""></iframe>
+</div>
+
+<!-- BẢNG TIẾN TRÌNH KÍCH HOẠT VÀ HIỆN CODE (CHẠY ĐÚNG 5 GIÂY) -->
+<div id="progressModal" class="modalOverlay hidden">
+    <div class="modalBox">
+        <div id="progressTitle" style="font-weight:900; font-size:16px; color:#00f0ff; letter-spacing:1px;"></div>
+        
+        <!-- Bảng Dòng Lệnh Code -->
+        <div id="codeConsole" class="codeBox"></div>
+        
+        <div class="progressContainer">
+            <div id="progressBar" class="progressBar"></div>
+        </div>
+        
+        <div id="progressPercent" style="font-weight:900; font-size:18px; color:#00ff87;">0%</div>
+        
+        <button id="progressCloseBtn" class="modalBtn btnYes hidden" style="width:100%; margin-top:15px;" onclick="btnAction(); closeProgressModal();">HOÀN TẤT</button>
+    </div>
+</div>
+
+<!-- POP-UP CHỌN PHIÊN BẢN GAME -->
+<div id="gameSelectModal" class="modalOverlay hidden">
+    <div class="modalBox">
+        <div style="font-size:16px; font-weight:bold; color:#00f0ff; margin-bottom:15px;">CHỌN PHIÊN BẢN GAME</div>
+        <div style="font-size:13px; color:#ccc; margin-bottom:15px;">Vui lòng chọn phiên bản game để áp dụng tệp:</div>
+        
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <label style="display:flex; align-items:center; gap:10px; background:#181828; padding:12px; border-radius:10px; cursor:pointer;">
+                <input type="radio" name="gameVersion" value="Free Fire" checked style="accent-color:#00ffd5;">
+                <span style="font-weight:bold;">FREE FIRE</span>
+            </label>
+            <label style="display:flex; align-items:center; gap:10px; background:#181828; padding:12px; border-radius:10px; cursor:pointer;">
+                <input type="radio" name="gameVersion" value="Free Fire MAX" style="accent-color:#00ffd5;">
+                <span style="font-weight:bold; color:#ff007f;">FREE FIRE MAX</span>
+            </label>
+        </div>
+
+        <div class="modalBtns">
+            <button class="modalBtn btnYes" onclick="btnAction(); startFileApplyProcess();">BẮT ĐẦU</button>
+            <button class="modalBtn btnNo" onclick="btnAction(); closeGameSelectModal();">HỦY</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* THAY ĐỔI TÊN FILE NHẠC CỦA BẠN TẠI ĐÂY */
+const AUDIO_SRC = "nhac.mp3"; 
+
+/* MẬT KHẨU / KEY ĐÚNG */
+const SECRET_KEY = "phatthanhios";
+
+/* LỆNH MÔ PHỎNG */
+const codeLines = [
+    "> Initializing memory buffer...",
+    "> Injecting system offsets...",
+    "> Verifying security bypass...",
+    "> Patching game engine values...",
+    "> Overriding recoil variables...",
+    "> Aligning crosshair coordinates...",
+    "> Optimization complete 100%!"
+];
+
+let bgAudio = null;
+
+window.onload = function() {
+    bgAudio = document.getElementById("bgMusic");
+    if (bgAudio) {
+        bgAudio.src = AUDIO_SRC;
+    }
+
+    setTimeout(() => {
+        playAudio();
+    }, 5000);
+
+    const savedKey = localStorage.getItem("vip_key_activated");
+    if (savedKey === SECRET_KEY) {
+        document.getElementById("keyScreen").classList.add("hidden");
+    }
+};
+
+function playAudio() {
+    if (bgAudio && bgAudio.paused) {
+        bgAudio.play().catch(() => {
+            const startAudioOnInteraction = () => {
+                bgAudio.play();
+                document.removeEventListener("click", startAudioOnInteraction);
+                document.removeEventListener("touchstart", startAudioOnInteraction);
+            };
+            document.addEventListener("click", startAudioOnInteraction);
+            document.addEventListener("touchstart", startAudioOnInteraction);
+        });
+    }
+}
+
+function checkKey() {
+    const inputVal = document.getElementById("keyInput").value.trim();
+    const errorDiv = document.getElementById("keyError");
+
+    if (inputVal === SECRET_KEY) {
+        localStorage.setItem("vip_key_activated", SECRET_KEY);
+        document.getElementById("keyScreen").classList.add("hidden");
+        errorDiv.textContent = "";
+    } else {
+        errorDiv.textContent = "❌ Key không chính xác, vui lòng thử lại!";
+        if ("vibrate" in navigator) {
+            navigator.vibrate([100, 50, 100]);
+        }
+    }
+}
+
+function logoutKey() {
+    localStorage.removeItem("vip_key_activated");
+    document.getElementById("keyInput").value = "";
+    document.getElementById("keyError").textContent = "";
+    document.getElementById("keyScreen").classList.remove("hidden");
+}
+
+function btnAction() {
+    playAudio();
+
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(900, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(450, audioCtx.currentTime + 0.07);
+
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.07);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.07);
+    } catch(e) {}
+
+    if ("vibrate" in navigator) {
+        navigator.vibrate(35);
+    }
+}
+
+let vipStates = { aimlook: false, aimbot: false, nheTam: false, fixLo: false, tamAo: false, aimbooy: false, aimneck: false };
+let currentVipType = null;
+
+function triggerVipProcess(name, type) {
+    currentVipType = type;
+    const isTurningOn = !vipStates[type];
+
+    if (!isTurningOn) {
+        toggleFeatureState(type, false);
+        return;
+    }
+
+    document.getElementById("progressTitle").textContent = "KÍCH HOẠT " + name;
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("progressPercent").textContent = "0%";
+    document.getElementById("codeConsole").innerHTML = "";
+    document.getElementById("progressCloseBtn").classList.add("hidden");
+    document.getElementById("progressModal").classList.remove("hidden");
+
+    let startTime = Date.now();
+    const duration = 5000;
+
+    const interval = setInterval(() => {
+        let elapsed = Date.now() - startTime;
+        let progress = Math.min(100, Math.floor((elapsed / duration) * 100));
+
+        let lineIndex = Math.floor((progress / 100) * codeLines.length);
+        if (codeLines[lineIndex] && !document.getElementById("codeConsole").innerHTML.includes(codeLines[lineIndex])) {
+            document.getElementById("codeConsole").innerHTML += codeLines[lineIndex] + "<br>";
+            document.getElementById("codeConsole").scrollTop = document.getElementById("codeConsole").scrollHeight;
+        }
+
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("progressPercent").textContent = progress + "%";
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            document.getElementById("progressCloseBtn").classList.remove("hidden");
+        }
+    }, 50);
+}
+
+function closeProgressModal() {
+    document.getElementById("progressModal").classList.add("hidden");
+    if (currentVipType) {
+        toggleFeatureState(currentVipType, true);
+    }
+}
+
+function toggleFeatureState(type, state) {
+    vipStates[type] = state;
+    const box = document.getElementById(type + "Box");
+    const status = document.getElementById(type + "Status");
+
+    if (state) {
+        box.classList.add("active-rainbow");
+        status.textContent = "ON";
+        if (type === "tamAo") {
+            document.getElementById("crosshair").style.display = "block";
+        }
+    } else {
+        box.classList.remove("active-rainbow");
+        status.textContent = "OFF";
+        if (type === "tamAo") {
+            document.getElementById("crosshair").style.display = "none";
+        }
+    }
+}
+
+/* MỞ WEB PHATTHANHIOS TRONG TRANG */
+function openPhatthanhiosWeb() {
+    const webContainer = document.getElementById("webContainer");
+    const iframe = document.getElementById("webIframe");
+    const title = document.getElementById("webTitle");
+    
+    title.textContent = "PHATTHANHIOS - ĐỘ NHẠY";
+    iframe.src = "https://nguyenminh24210-hash.github.io/donhay";
+    webContainer.classList.remove("hidden");
+}
+
+/* MỞ WEB KÝ IPA TRỰC TIẾP TRONG TRANG */
+function openIpaSigningWeb() {
+    const webContainer = document.getElementById("webContainer");
+    const iframe = document.getElementById("webIframe");
+    const title = document.getElementById("webTitle");
+    
+    title.textContent = "KÝ IPA TRỰC TUYẾN";
+    iframe.src = "https://ipa-zeta-one.vercel.app";
+    webContainer.classList.remove("hidden");
+}
+
+/* ĐÓNG MÀN HÌNH WEB TÍCH HỢP */
+function closeEmbeddedWeb() {
+    const webContainer = document.getElementById("webContainer");
+    const iframe = document.getElementById("webIframe");
+    webContainer.classList.add("hidden");
+    iframe.src = "";
+}
+
+let selectedFileName = "";
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    const displayArea = document.getElementById("fileDisplayArea");
+    const nameText = document.getElementById("fileNameText");
+    const statusText = document.getElementById("fileStatusText");
+    const applyBtn = document.getElementById("applyFileBtn");
+
+    if (!file) return;
+
+    selectedFileName = file.name;
+    displayArea.classList.remove("hidden");
+    nameText.textContent = "📄 " + selectedFileName;
+
+    if (selectedFileName.toLowerCase().includes("freefire")) {
+        statusText.textContent = "✓ Tệp hợp lệ! Sẵn sàng áp dụng.";
+        statusText.style.color = "#00ff87";
+        applyBtn.classList.remove("hidden");
+    } else {
+        statusText.textContent = "❌ File không áp dụng được! Tên tệp phải chứa chữ 'freefire'.";
+        statusText.style.color = "#ff3366";
+        applyBtn.classList.add("hidden");
+        if ("vibrate" in navigator) {
+            navigator.vibrate([100, 50, 100]);
+        }
+    }
+}
+
+function openGameSelectModal() {
+    document.getElementById("gameSelectModal").classList.remove("hidden");
+}
+
+function closeGameSelectModal() {
+    document.getElementById("gameSelectModal").classList.add("hidden");
+}
+
+function startFileApplyProcess() {
+    closeGameSelectModal();
+    const selectedGame = document.querySelector('input[name="gameVersion"]:checked').value;
+    triggerVipProcess("CẤU HÌNH " + selectedGame.toUpperCase(), null);
+}
+</script>
+
+</body>
+</html>
